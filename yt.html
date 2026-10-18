@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- YouTube refuses embeds without an HTTP Referer (Error 153). Apps that render
+     HTML from a custom scheme (e.g. AnkiMobile's ankifile://) send none, so the
+     card embeds this https page instead, and this page embeds YouTube. -->
+<meta name="referrer" content="strict-origin-when-cross-origin">
+<title>YouTube clip</title>
+<style>
+  html, body { margin: 0; height: 100%; background: #000; }
+  iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+  p { color: #ccc; font: 14px system-ui, sans-serif; padding: 12px; }
+</style>
+</head>
+<body>
+<script>
+  (function () {
+    var params = new URLSearchParams(location.search);
+    var id = params.get('v') || '';
+    if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
+      var msg = document.createElement('p');
+      msg.textContent = 'Invalid video id.';
+      document.body.appendChild(msg);
+      return;
+    }
+    var start = Math.max(0, parseInt(params.get('start') || '0', 10) || 0);
+    var end = parseInt(params.get('end') || '0', 10) || 0;
+    var query = new URLSearchParams({ start: String(start), rel: '0', playsinline: '1' });
+    if (end > start) query.set('end', String(end));
+    var frame = document.createElement('iframe');
+    frame.src = 'https://www.youtube.com/embed/' + id + '?' + query.toString();
+    frame.allow = 'autoplay; encrypted-media; picture-in-picture; fullscreen';
+    frame.referrerPolicy = 'strict-origin-when-cross-origin';
+    frame.allowFullscreen = true;
+    document.body.appendChild(frame);
+  })();
+</script>
+</body>
+</html>
