@@ -21,7 +21,8 @@
     var id = params.get('v') || '';
     if (!/^[A-Za-z0-9_-]{11}$/.test(id)) {
       var msg = document.createElement('p');
-      msg.textContent = 'Invalid video id.';
+      msg.textContent = 'Invalid video id. Received URL: ' + location.href + ' | search: ' + JSON.stringify(location.search) + ' | hash: ' + JSON.stringify(location.hash) + ' | referrer: ' + JSON.stringify(document.referrer);
+      msg.style.wordBreak = 'break-all';
       document.body.appendChild(msg);
       return;
     }
